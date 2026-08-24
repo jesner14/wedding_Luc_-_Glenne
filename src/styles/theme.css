@@ -2,33 +2,35 @@
 
 :root {
   --font-size: 16px;
-  /* Orange & blanc — billet Luc & Glenne */
-  --background: #fffaf6;
-  --foreground: #3a2418;
-  --card: #ffffff;
-  --card-foreground: #3a2418;
-  --popover: #ffffff;
-  --popover-foreground: #3a2418;
-  --primary: #e07040;
-  --primary-foreground: #ffffff;
-  --secondary: #fff1e8;
-  --secondary-foreground: #3a2418;
-  --muted: #f5e6dc;
-  --muted-foreground: #8a6550;
-  --accent: #e07040;
-  --accent-foreground: #ffffff;
+  /* Terracotta Doré — Luc & Glenne */
+  --background: #f7f1e8;
+  --foreground: #3b2a1f;
+  --card: #fffaf3;
+  --card-foreground: #3b2a1f;
+  --popover: #fffaf3;
+  --popover-foreground: #3b2a1f;
+  --primary: #c45c32;
+  --primary-foreground: #fffaf3;
+  --secondary: #efe3d2;
+  --secondary-foreground: #3b2a1f;
+  --muted: #eadccb;
+  --muted-foreground: #8c6b52;
+  --accent: #c6a15b;
+  --accent-foreground: #3b2a1f;
   --destructive: #c0392b;
   --destructive-foreground: #ffffff;
-  --border: rgba(224, 112, 64, 0.22);
+  --border: rgba(196, 92, 50, 0.22);
   --input: transparent;
-  --input-background: #fff5ee;
-  --switch-background: #e07040;
+  --input-background: #f3e9dc;
+  --switch-background: #c6a15b;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #e07040;
-  --orange: #e07040;
-  --orange-deep: #c85a2c;
-  --cream: #fffaf6;
+  --ring: #c6a15b;
+  --terracotta: #c45c32;
+  --terracotta-deep: #9e3f1f;
+  --gold: #c6a15b;
+  --gold-bright: #d4af37;
+  --cream: #f7f1e8;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);

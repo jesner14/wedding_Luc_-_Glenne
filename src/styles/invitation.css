@@ -1,0 +1,149 @@
+.invitation-card {
+  position: relative;
+  margin-inline: auto;
+  max-width: 340px;
+  padding: 2.5rem 1.85rem 2.25rem 1.75rem;
+  background: #faf6f0;
+  color: #5a3d2e;
+  box-shadow:
+    0 18px 40px rgba(59, 42, 31, 0.12),
+    0 2px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.invitation-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -11px;
+  bottom: 0;
+  width: 22px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='24' viewBox='0 0 22 24'%3E%3Cpath d='M0 0h11a11 11 0 0 1 0 24H0z' fill='%23faf6f0'/%3E%3C/svg%3E");
+  background-size: 22px 24px;
+  background-repeat: repeat-y;
+  filter: drop-shadow(2px 0 2px rgba(59, 42, 31, 0.06));
+}
+
+.invitation-card-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.invitation-quote {
+  margin-bottom: 1.25rem;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  line-height: 1.55;
+  color: #7a5c48;
+}
+
+.invitation-kicker {
+  margin-bottom: 0.35rem;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8c6b52;
+}
+
+.invitation-names {
+  margin-bottom: 1.35rem;
+  font-family: "Great Vibes", cursive;
+  font-size: clamp(2.4rem, 9vw, 3rem);
+  line-height: 1;
+  color: #5a3d2e;
+}
+
+.invitation-body {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #6b4f3c;
+}
+
+.invitation-body p + p {
+  margin-top: 0.85rem;
+}
+
+.invitation-letter-wrap {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.invitation-flowers-corner {
+  position: absolute;
+  left: -8px;
+  top: -18px;
+  width: 88px;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(59, 42, 31, 0.1));
+}
+
+/* Enveloppe ouverte + carte */
+.invite-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: visible;
+}
+
+.envelope-hero {
+  width: min(96vw, 480px);
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.envelope-open {
+  overflow: visible;
+}
+
+.envelope-collage {
+  position: relative;
+  z-index: 5;
+  width: 72%;
+  max-width: 380px;
+  margin: clamp(-7.5rem, -18vw, -5rem) 0 0 calc(50% - 72%);
+  padding-bottom: 18%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.collage-invite-card {
+  display: block;
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  height: auto;
+  transform: scale(1.08);
+  transform-origin: top left;
+  filter: drop-shadow(0 10px 22px rgba(59, 42, 31, 0.16));
+}
+
+/* Photo à droite, derrière la carte : déborde un peu en bas */
+.collage-invite-photo {
+  position: absolute;
+  left: 66%;
+  top: 28%;
+  z-index: 2;
+  width: 88%;
+  height: auto;
+  margin-left: 3.5cm;
+  margin-top: 0;
+  filter: drop-shadow(0 12px 24px rgba(59, 42, 31, 0.2));
+}
+
+@media (min-width: 480px) {
+  .envelope-collage {
+    width: 74%;
+    max-width: 400px;
+    margin-top: clamp(-8rem, -19vw, -5.5rem);
+    margin-left: calc(50% - 74%);
+  }
+
+  .collage-invite-photo {
+    left: 64%;
+    top: 26%;
+    width: 90%;
+  }
+}

@@ -1,0 +1,31 @@
+---
+description: V1 validée — écran invitation ouvert (enveloppe + collage + médaille)
+globs: src/app/App.tsx,src/styles/envelope.css,src/styles/invitation.css,public/decor/invite-card*,public/photos/invite-photo*,public/flowers/wax-seal.png
+alwaysApply: true
+---
+
+# Écran invitation ouvert — V1 VALIDÉE — NE PAS MODIFIER
+
+L'utilisateur a validé la **V1** de l'écran d'invitation ouverte. **Ne plus toucher** à cette zone, quelles que soient les futures demandes (sauf instruction explicite et contraire de l'utilisateur).
+
+## V1 — contenu figé
+
+- Enveloppe ouverte (`Envelope`, `envelope-open-stack`, `envelope-haut.png` / `envelope-bas.png`)
+- Vinyle interactif (`envelope-vinyl-inside`, musique)
+- Médaille cupidon (`wax-seal.png`, `.envelope-open-seal`)
+- Collage (`EnvelopeCollage`) :
+  - Carte gauche `invite-card.png` (scale 1.08, devant)
+  - Photo droite `invite-photo.png` (derrière la carte, textes visibles)
+- En-tête : « Amoureusement vôtre », noms, « Touchez le vinyle »
+- Tous positionnements, tailles, z-index, marges de `.envelope-hero`, `.envelope-collage`, `.collage-invite-card`, `.collage-invite-photo`, `.invite-open`
+
+## Fichiers concernés
+
+- `src/app/App.tsx` — `Envelope`, `EnvelopeCollage`, `OpenedInvitation` (partie hero)
+- `src/styles/envelope.css` — enveloppe ouverte, médaille
+- `src/styles/invitation.css` — hero, collage, cartes
+- Assets : `public/decor/invite-card*`, `public/photos/invite-photo*`, `public/decor/envelope-haut.png`, `public/decor/envelope-bas.png`, `public/flowers/wax-seal.png`
+
+## Autorisé ailleurs
+
+Ajouter de nouvelles sections **en dessous** ou de nouveaux écrans (`details`, `rsvp`, etc.) sans refactorer la V1 du hero.
