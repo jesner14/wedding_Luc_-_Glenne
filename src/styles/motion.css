@@ -1,0 +1,90 @@
+/* Soft reveal — same transition on every image (no transform conflict) */
+@keyframes invite-soft-reveal {
+  from {
+    opacity: 0;
+    filter: blur(5px) saturate(0.92);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0) saturate(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  img {
+    animation: invite-soft-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Closed splash — envelope entrance */
+  .closed-envelope {
+    animation: invite-soft-reveal 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
+  }
+
+  .closed-splash h1 {
+    animation: invite-soft-reveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
+  }
+
+  /* Light stagger so stacked images don't pop in all at once */
+  .invite-open img:nth-of-type(1),
+  .envelope-open img:nth-of-type(1) {
+    animation-delay: 0.05s;
+  }
+
+  .invite-open img:nth-of-type(2),
+  .envelope-open img:nth-of-type(2) {
+    animation-delay: 0.12s;
+  }
+
+  .invite-open img:nth-of-type(3),
+  .envelope-open img:nth-of-type(3) {
+    animation-delay: 0.2s;
+  }
+
+  .invite-showcase-combined-img {
+    animation-delay: 0.28s;
+  }
+
+  .invite-rsvp-entry-img {
+    animation-delay: 0.36s;
+  }
+
+  .invite-love-entry-img {
+    animation-delay: 0.44s;
+  }
+
+  .invite-closing-seal {
+    animation-delay: 0.52s;
+  }
+
+  .love-story-polaroid img,
+  .love-story-heart-shape {
+    animation: invite-soft-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+  }
+
+  /* Soft hover on clickable image buttons */
+  .invite-showcase-combined,
+  .invite-rsvp-entry,
+  .invite-love-entry {
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .invite-showcase-combined:hover,
+  .invite-rsvp-entry:hover,
+  .invite-love-entry:hover {
+    transform: translateY(-3px);
+  }
+
+  .invite-showcase-combined:active,
+  .invite-rsvp-entry:active,
+  .invite-love-entry:active {
+    transform: translateY(0) scale(0.99);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  img,
+  .closed-envelope,
+  .closed-splash h1 {
+    animation: none !important;
+  }
+}

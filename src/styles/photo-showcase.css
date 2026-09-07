@@ -39,10 +39,181 @@
   filter: drop-shadow(0 10px 22px rgba(59, 42, 31, 0.14));
 }
 
+/* Collage bas de page : RSVP + Love Story imbriqués (réf. scrapbook) */
+.invite-bottom-collage {
+  position: relative;
+  width: 100%;
+  max-width: min(100vw, 420px);
+  margin: 0.85rem auto 0.5rem;
+  padding: 0 0 5.5rem;
+  overflow: visible;
+}
+
+/* RSVP — enveloppe + polaroid (×2) */
+.invite-rsvp-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.invite-rsvp-entry {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.invite-rsvp-entry:active {
+  transform: scale(0.99);
+}
+
+.invite-rsvp-entry-img {
+  display: block;
+  width: 200%;
+  max-width: none;
+  height: auto;
+  margin-left: -38%;
+  filter: drop-shadow(0 10px 22px rgba(59, 42, 31, 0.14));
+}
+
+/* Love Story — rotation gauche : photos plus bas, badge + fleur en haut */
+.invite-love-row {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  justify-content: flex-end;
+  width: 128%;
+  margin: -5.5rem 0 0 -8%;
+  padding: 0;
+}
+
+.invite-love-entry {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.invite-love-entry:active {
+  transform: scale(0.99);
+}
+
+.invite-love-entry-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: rotate(-11deg) scale(1.12);
+  transform-origin: 78% 10%;
+  filter: drop-shadow(0 12px 26px rgba(59, 42, 31, 0.16));
+}
+
 @media (min-width: 480px) {
   .invite-showcase-row {
     max-width: 600px;
   }
+
+  .invite-bottom-collage {
+    max-width: 460px;
+    padding-bottom: 6.5rem;
+  }
+
+  .invite-love-row {
+    margin-top: -6rem;
+    width: 125%;
+    margin-left: -6%;
+  }
+
+  .invite-love-entry-img {
+    transform: rotate(-10deg) scale(1.14);
+  }
+}
+
+/* Pied de page — Amoureusement vôtre / compte à rebours / fermer */
+.invite-closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 0.25rem auto 0;
+  padding: 0.5rem 0.5rem 0.5rem;
+  max-width: 360px;
+}
+
+.invite-closing-kicker {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #3b2a1f;
+}
+
+.invite-closing-names {
+  margin: 0.65rem 0 1.5rem;
+  font-family: "Great Vibes", cursive;
+  font-size: clamp(2.6rem, 11vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1;
+  color: #3b2a1f;
+}
+
+.invite-footer-countdown {
+  width: 100%;
+  margin: 0 0 1.75rem;
+}
+
+.invite-footer-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.35rem;
+  align-items: start;
+}
+
+.invite-footer-countdown-value {
+  font-size: clamp(1.65rem, 7vw, 2.1rem);
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.invite-footer-countdown-label {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+
+.invite-closing-seal {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  margin: 0.25rem 0 1.1rem;
+  filter: drop-shadow(0 6px 14px rgba(80, 45, 10, 0.32));
+}
+
+.invite-closing-close {
+  border: 0;
+  padding: 0.4rem 0.5rem;
+  background: transparent;
+  cursor: pointer;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #3b2a1f;
+}
+
+.invite-closing-close:active {
+  opacity: 0.7;
 }
 
 .photo-tray-wrap {

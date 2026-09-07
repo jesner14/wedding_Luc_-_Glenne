@@ -1,0 +1,166 @@
+/* Love Story screen */
+.love-story {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.75rem 1.25rem 2.5rem;
+  overflow: hidden;
+  color: #fff;
+}
+
+.love-story-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(20, 18, 28, 0.45) 0%, rgba(20, 18, 28, 0.55) 100%),
+    url("/decor/love-story-bg.png") center / cover no-repeat;
+  filter: blur(0px);
+  transform: scale(1.04);
+  z-index: 0;
+}
+
+.love-story-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(2px);
+  background: rgba(15, 12, 20, 0.18);
+}
+
+.love-story > *:not(.love-story-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+.love-story-back,
+.love-story-close {
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+}
+
+.love-story-title {
+  margin: 0.85rem 0 1.5rem;
+  font-family: "Great Vibes", cursive;
+  font-size: clamp(2.8rem, 12vw, 3.6rem);
+  line-height: 1;
+  font-weight: 400;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+}
+
+.love-story-envelope {
+  position: relative;
+  width: min(78vw, 280px);
+  margin: 0 auto 1.75rem;
+}
+
+.love-story-envelope-body {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.05;
+  background:
+    linear-gradient(160deg, #e07a4a 0%, #c45c32 48%, #9e3f1f 100%);
+  border-radius: 4px;
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+
+.love-story-envelope-flap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 42%;
+  background: linear-gradient(180deg, #d36a3c 0%, #b14a28 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  z-index: 1;
+  opacity: 0.92;
+}
+
+.love-story-polaroid {
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  z-index: 2;
+  width: 68%;
+  transform: translateX(-50%) rotate(-2deg);
+  background: #f7f3ee;
+  padding: 8px 8px 28px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.love-story-polaroid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1.05;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.love-story-heart {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  z-index: 4;
+  width: 108px;
+  height: 98px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.32));
+}
+
+.love-story-heart-shape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.love-story-heart span {
+  position: relative;
+  z-index: 1;
+  margin-top: 0.35rem;
+  max-width: 72px;
+  font-family: "Great Vibes", cursive;
+  font-size: 0.78rem;
+  line-height: 1.15;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(80, 50, 10, 0.5);
+}
+
+.love-story-text {
+  max-width: 22rem;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+.love-story-text p {
+  margin: 0 0 1rem;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+
+.love-story-text p:last-child {
+  margin-bottom: 0;
+}
+
+.love-story-close {
+  margin-top: auto;
+  padding-top: 1rem;
+}

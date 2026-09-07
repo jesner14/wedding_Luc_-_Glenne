@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 
-type Screen = "invite" | "details" | "rsvp" | "thanks";
+type Screen = "invite" | "details" | "rsvp" | "thanks" | "love-story";
 
 interface Guest {
   id: string;
   name: string;
   attending: boolean;
+  events: {
+    mairie: boolean;
+    eglise: boolean;
+    soiree: boolean;
+  };
+  note: string;
   registeredAt: string;
 }
 
@@ -42,6 +48,7 @@ const WEDDING = {
   civil: "Mairie d'Akanda",
   soiree: "Pavillon Royal",
   soireeDetail: "Akanda Pavés, après l'École les Kikinous",
+  rsvpDeadline: "20 Août 2026",
 };
 
 const COUPLE_PHOTOS = [
@@ -70,7 +77,7 @@ function Envelope({
       <button
         type="button"
         onClick={onOpen}
-        className="relative mx-auto block w-[min(88vw,320px)]"
+        className="closed-envelope relative mx-auto block w-[min(82vw,480px)]"
         aria-label="Ouvrir l'enveloppe"
       >
         <svg viewBox="0 0 320 230" className="h-auto w-full drop-shadow-xl" aria-hidden>
@@ -160,7 +167,7 @@ function getCountdownParts(target: Date) {
   };
 }
 
-function Countdown() {
+function Countdown({ compact = false }: { compact?: boolean }) {
   const target = useMemo(() => new Date(`${WEDDING.dateIso}T${WEDDING.civilTime}:00`), []);
   const [parts, setParts] = useState(() => getCountdownParts(target));
 
@@ -177,15 +184,21 @@ function Countdown() {
   ];
 
   return (
-    <div className="px-2 py-2">
-      <p className="mb-5 text-center text-sm tracking-[0.28em] text-[#8c6b52]" style={fontSans}>
-        {parts.done ? "C’est le grand jour" : "L’aventure commence dans"}
-      </p>
-      <div className="grid grid-cols-4 gap-2">
+    <div className={compact ? "invite-footer-countdown" : "px-2 py-2"}>
+      {!compact && (
+        <p className="mb-5 text-center text-sm tracking-[0.28em] text-[#8c6b52]" style={fontSans}>
+          {parts.done ? "C’est le grand jour" : "L’aventure commence dans"}
+        </p>
+      )}
+      <div className={compact ? "invite-footer-countdown-grid" : "grid grid-cols-4 gap-2"}>
         {cells.map((cell) => (
           <div key={cell.label} className="text-center">
             <p
-              className="text-3xl font-semibold tabular-nums leading-none sm:text-4xl"
+              className={
+                compact
+                  ? "invite-footer-countdown-value"
+                  : "text-3xl font-semibold tabular-nums leading-none sm:text-4xl"
+              }
               style={{
                 ...fontSerif,
                 color: cell.accent ? "#c45c32" : "#3b2a1f",
@@ -194,9 +207,13 @@ function Countdown() {
               {String(cell.value).padStart(2, "0")}
             </p>
             <p
-              className="mt-2 text-[10px] uppercase tracking-[0.18em]"
+              className={
+                compact
+                  ? "invite-footer-countdown-label"
+                  : "mt-2 text-[10px] uppercase tracking-[0.18em]"
+              }
               style={{
-                ...fontSans,
+                ...(compact ? fontSerif : fontSans),
                 color: cell.accent ? "#c45c32" : "#8c6b52",
               }}
             >
@@ -380,7 +397,7 @@ function Venue({
 
 function ClosedSplash({ onOpen }: { onOpen: () => void }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
+    <div className="closed-splash flex min-h-screen flex-col items-center justify-center px-6 py-12">
       <p
         className="mb-3 text-[11px] uppercase tracking-[0.38em] text-[#3b2a1f]"
         style={fontSans}
@@ -388,7 +405,7 @@ function ClosedSplash({ onOpen }: { onOpen: () => void }) {
         Vous êtes invité par
       </p>
       <h1 className="mb-12 text-5xl text-[#3b2a1f]" style={fontScript}>
-        {WEDDING.groom} &amp; {WEDDING.bride}
+        {WEDDING.bride} &amp; {WEDDING.groom}
       </h1>
       <Envelope open={false} onOpen={onOpen} />
       <button
@@ -407,10 +424,16 @@ function OpenedInvitation({
   playing,
   onToggleMusic,
   onOpenDetails,
+  onOpenRsvp,
+  onOpenLoveStory,
+  onCloseEnvelope,
 }: {
   playing: boolean;
   onToggleMusic: () => void;
   onOpenDetails: () => void;
+  onOpenRsvp: () => void;
+  onOpenLoveStory: () => void;
+  onCloseEnvelope: () => void;
 }) {
   return (
     <div className="invite-open px-4 pb-10 pt-6">
@@ -449,16 +472,65 @@ function OpenedInvitation({
           />
         </button>
       </div>
+
+      <div className="invite-bottom-collage">
+        <div className="invite-rsvp-row">
+          <button
+            type="button"
+            className="invite-rsvp-entry"
+            onClick={onOpenRsvp}
+            aria-label="Confirmer sa présence"
+          >
+            <img
+              src="/decor/rsvp-entry.png?v=2"
+              alt="Rsvp — Confirmer"
+              className="invite-rsvp-entry-img"
+              draggable={false}
+            />
+          </button>
+        </div>
+
+        <div className="invite-love-row">
+          <button
+            type="button"
+            className="invite-love-entry"
+            onClick={onOpenLoveStory}
+            aria-label="Voir notre Love Story"
+          >
+            <img
+              src="/decor/love-story-entry.png?v=1"
+              alt="Love Story — Cliquez ici"
+              className="invite-love-entry-img"
+              draggable={false}
+            />
+          </button>
+        </div>
+      </div>
+
+      <footer className="invite-closing">
+        <p className="invite-closing-kicker">Amoureusement vôtre,</p>
+        <h2 className="invite-closing-names">
+          {WEDDING.bride} &amp; {WEDDING.groom}
+        </h2>
+        <Countdown compact />
+        <img
+          src="/flowers/wax-seal.png"
+          alt=""
+          draggable={false}
+          className="invite-closing-seal"
+        />
+        <button type="button" className="invite-closing-close" onClick={onCloseEnvelope}>
+          Fermer l&apos;enveloppe
+        </button>
+      </footer>
     </div>
   );
 }
 
 function DetailsScreen({
   onBack,
-  onGoRsvp,
 }: {
   onBack: () => void;
-  onGoRsvp: () => void;
 }) {
   const programItems = [
     {
@@ -591,18 +663,10 @@ function DetailsScreen({
           Guide Cadeaux
         </h2>
         <div className="mx-auto max-w-sm rounded-[20px] bg-[#f7f1e8] px-6 py-8 text-center shadow-[0_18px_40px_rgba(59,42,31,0.08)]">
-          <p className="mb-6 text-[#3b2a1f]" style={fontSerif}>
+          <p className="mb-2 text-[#3b2a1f]" style={fontSerif}>
             Tous vos cadeaux sont bienvenus, qu’ils soient matériels ou financiers.
             Nous exprimons d’avance notre gratitude pour votre geste.
           </p>
-          <button
-            type="button"
-            className="mx-auto mt-2 block w-full max-w-xs rounded-full bg-[#c45c32] py-4 text-center text-white"
-            style={fontSans}
-            onClick={onGoRsvp}
-          >
-            RSVP
-          </button>
         </div>
       </section>
 
@@ -632,24 +696,25 @@ function DetailsScreen({
           className="h-20 w-20 rounded-full object-contain"
           style={{ filter: "drop-shadow(0 4px 10px rgba(80,45,10,0.35))" }}
         />
-        <p className="mt-2 text-center text-[13px] uppercase tracking-[0.32em] text-[#3b2a1f]" style={fontSans}>
-          Continuer vers RSVP
-        </p>
-        <button
-          type="button"
-          onClick={onGoRsvp}
-          className="mt-4 w-full max-w-xs rounded-full bg-[#c45c32] py-4 text-white"
-          style={fontSans}
-        >
-          Continuer
-        </button>
       </div>
     </div>
   );
 }
 
-function RsvpScreen({ onBack, onDone }: { onBack: () => void; onDone: () => void }) {
+function RsvpScreen({
+  onBack,
+  onDone,
+  onContinueStory,
+}: {
+  onBack: () => void;
+  onDone: () => void;
+  onContinueStory: () => void;
+}) {
   const [name, setName] = useState("");
+  const [mairie, setMairie] = useState(false);
+  const [eglise, setEglise] = useState(false);
+  const [soiree, setSoiree] = useState(false);
+  const [note, setNote] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -658,6 +723,10 @@ function RsvpScreen({ onBack, onDone }: { onBack: () => void; onDone: () => void
     const trimmed = name.trim();
     if (!trimmed) {
       setError("Merci d’indiquer votre nom complet.");
+      return;
+    }
+    if (!mairie && !eglise && !soiree) {
+      setError("Merci de sélectionner au moins un événement.");
       return;
     }
 
@@ -679,6 +748,8 @@ function RsvpScreen({ onBack, onDone }: { onBack: () => void; onDone: () => void
       id: generateId(),
       name: trimmed,
       attending: true,
+      events: { mairie, eglise, soiree },
+      note: note.trim(),
       registeredAt: new Date().toISOString(),
     });
     await new Promise((r) => setTimeout(r, 450));
@@ -686,22 +757,36 @@ function RsvpScreen({ onBack, onDone }: { onBack: () => void; onDone: () => void
     onDone();
   };
 
+  const eventOptions = [
+    { key: "mairie", label: "Je serai à la mairie", checked: mairie, set: setMairie },
+    { key: "eglise", label: "Je serai à l'église", checked: eglise, set: setEglise },
+    { key: "soiree", label: "Je serai à la soirée", checked: soiree, set: setSoiree },
+  ] as const;
+
   return (
-    <div className="mx-auto flex min-h-screen max-w-lg flex-col">
-      <div className="bg-[#c45c32] px-6 pb-10 pt-14 text-center text-[#fffaf3]">
-        <p className="mb-2 text-[11px] uppercase tracking-[0.3em] text-white/80" style={fontSans}>
-          Confirmation de présence
-        </p>
-        <h2 className="text-4xl" style={fontScript}>
-          {WEDDING.groom} &amp; {WEDDING.bride}
-        </h2>
-      </div>
-      <form onSubmit={handleSubmit} className="mx-auto w-full max-w-sm flex-1 px-6 py-8">
-        <p className="mb-6 text-center text-sm leading-relaxed text-[#8c6b52]" style={fontSans}>
-          Confirmez votre venue au mariage du 4 décembre 2026.
-        </p>
-        <label className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-[#8c6b52]" style={fontSans}>
-          Nom complet
+    <div className="rsvp-screen mx-auto flex min-h-screen max-w-lg flex-col px-6 pb-12 pt-8">
+      <button
+        type="button"
+        onClick={onBack}
+        className="mb-8 self-center text-[12px] uppercase tracking-[0.35em] text-[#5c5a3a]"
+        style={fontSerif}
+      >
+        Retour
+      </button>
+
+      <h1 className="mb-3 text-center text-[clamp(2.75rem,11vw,3.5rem)] leading-none text-[#8a8f58]" style={fontScript}>
+        Veuillez Confirmer
+      </h1>
+      <p
+        className="mb-10 text-center text-[12px] uppercase tracking-[0.18em] text-[#6b6e45]"
+        style={fontSerif}
+      >
+        Votre présence avant le {WEDDING.rsvpDeadline}
+      </p>
+
+      <form onSubmit={handleSubmit} className="mx-auto w-full max-w-md flex-1">
+        <label className="mb-2 block text-[15px] text-[#3b2a1f]" style={fontSerif}>
+          Votre nom complet
         </label>
         <input
           type="text"
@@ -710,33 +795,80 @@ function RsvpScreen({ onBack, onDone }: { onBack: () => void; onDone: () => void
             setName(e.target.value);
             setError("");
           }}
-          placeholder="ex. Marie Dupont"
-          className="mb-3 w-full border border-[#c45c32]/25 bg-[#f3e9dc] px-4 py-3 text-[#3b2a1f] placeholder:text-[#8c6b52]/50 focus:outline-none focus:ring-1 focus:ring-[#c6a15b]"
+          className="mb-8 w-full border border-[#3b2a1f]/35 bg-white px-4 py-3.5 text-[17px] text-[#3b2a1f] focus:outline-none focus:ring-1 focus:ring-[#8a8f58]"
           style={fontSerif}
           autoFocus
         />
+
+        <p className="mb-3 text-[15px] text-[#3b2a1f]" style={fontSerif}>
+          À quel événement participerez-vous?*
+        </p>
+        <div className="mb-8 space-y-3">
+          {eventOptions.map((opt) => (
+            <label
+              key={opt.key}
+              className="flex cursor-pointer items-center gap-3 rounded-md bg-[#e8e6e0] px-4 py-3.5"
+            >
+              <input
+                type="checkbox"
+                checked={opt.checked}
+                onChange={(e) => {
+                  opt.set(e.target.checked);
+                  setError("");
+                }}
+                className="h-4 w-4 accent-[#8a8f58]"
+              />
+              <span className="text-[16px] text-[#3b2a1f]" style={fontSerif}>
+                {opt.label}
+              </span>
+            </label>
+          ))}
+        </div>
+
+        <label className="mb-2 block text-[15px] leading-snug text-[#3b2a1f]" style={fontSerif}>
+          Avez-vous une suggestion ou remarque quelconque, Veuillez la partager ci-dessous.
+        </label>
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          rows={5}
+          className="mb-8 w-full resize-y border border-[#3b2a1f]/35 bg-white px-4 py-3.5 text-[16px] text-[#3b2a1f] focus:outline-none focus:ring-1 focus:ring-[#8a8f58]"
+          style={fontSerif}
+        />
+
         {error && (
-          <p className="mb-3 text-xs text-destructive" style={fontSans}>
+          <p className="mb-4 text-center text-sm text-destructive" style={fontSans}>
             {error}
           </p>
         )}
+
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#c45c32] py-4 text-sm uppercase tracking-[0.18em] text-white hover:bg-[#9e3f1f] disabled:opacity-60"
-          style={fontSans}
+          className="mb-10 w-full rounded-md bg-[#8a8f58] py-4 text-[18px] text-[#2f2f1f] hover:bg-[#7a7f4c] disabled:opacity-60"
+          style={fontSerif}
         >
-          {loading ? "Enregistrement…" : "Confirmer ma présence"}
-        </button>
-        <button
-          type="button"
-          onClick={onBack}
-          className="mt-4 w-full py-3 text-sm uppercase tracking-widest text-[#8c6b52]"
-          style={fontSans}
-        >
-          ← Retour
+          {loading ? "Enregistrement…" : "Soumettre"}
         </button>
       </form>
+
+      <div className="mt-auto flex flex-col items-center">
+        <img
+          src="/flowers/wax-seal.png"
+          alt=""
+          draggable={false}
+          className="h-[72px] w-[72px] object-contain"
+          style={{ filter: "drop-shadow(0 4px 10px rgba(80,45,10,0.35))" }}
+        />
+        <button
+          type="button"
+          onClick={onContinueStory}
+          className="mt-4 text-[12px] uppercase tracking-[0.28em] text-[#3b2a1f]"
+          style={fontSerif}
+        >
+          Continuer vers Love Story
+        </button>
+      </div>
     </div>
   );
 }
@@ -765,8 +897,79 @@ function ThanksScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
+function LoveStoryScreen({
+  onBack,
+  onCloseEnvelope,
+}: {
+  onBack: () => void;
+  onCloseEnvelope: () => void;
+}) {
+  return (
+    <div className="love-story">
+      <div className="love-story-bg" aria-hidden />
+
+      <button type="button" className="love-story-back" onClick={onBack}>
+        Retour
+      </button>
+
+      <h1 className="love-story-title">Love Story</h1>
+
+      <div className="love-story-envelope">
+        <div className="love-story-envelope-body">
+          <div className="love-story-envelope-flap" aria-hidden />
+          <div className="love-story-polaroid">
+            <img
+              src="/photos/love-story.jpg?v=1"
+              alt={`${WEDDING.groom} et ${WEDDING.bride}`}
+              draggable={false}
+            />
+          </div>
+          <div className="love-story-heart" aria-hidden>
+            <svg className="love-story-heart-shape" viewBox="0 0 100 90" aria-hidden>
+              <defs>
+                <linearGradient id="heartGold" x1="0.3" y1="0" x2="0.8" y2="1">
+                  <stop offset="0%" stopColor="#f2e2b8" />
+                  <stop offset="45%" stopColor="#d4af6a" />
+                  <stop offset="100%" stopColor="#a8823f" />
+                </linearGradient>
+              </defs>
+              <path
+                fill="url(#heartGold)"
+                d="M50 82 C50 82 8 54 8 28 C8 14 18 6 31 6 C40 6 46 12 50 20 C54 12 60 6 69 6 C82 6 92 14 92 28 C92 54 50 82 50 82 Z"
+              />
+              <path
+                fill="none"
+                stroke="rgba(255,255,255,0.45)"
+                strokeWidth="1.4"
+                d="M50 76 C50 76 14 52 14 30 C14 18 22 11 32 11 C40 11 45 16 50 24 C55 16 60 11 68 11 C78 11 86 18 86 30 C86 52 50 76 50 76 Z"
+              />
+            </svg>
+            <span>I&apos;m getting married this year</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="love-story-text">
+        <p>Nous nous sommes rencontrés comme des inconnus et avons trouvé notre âme sœur.</p>
+        <p>
+          Ce qui a commencé par de simples conversations s&apos;est épanoui en un amour inattendu et
+          unique. Malgré la distance et le passage des saisons, nos liens n&apos;ont fait que se
+          renforcer. Nous avons appris que le foyer n&apos;est pas un lieu sur une carte, mais un
+          sentiment que l&apos;on trouve dans les bras de l&apos;autre.
+        </p>
+        <p>À travers chaque étape de notre vie, nous nous choisissons, aujourd&apos;hui et pour toujours.</p>
+      </div>
+
+      <button type="button" className="love-story-close" onClick={onCloseEnvelope}>
+        Fermer l&apos;enveloppe
+      </button>
+    </div>
+  );
+}
+
 export default function App() {
   const [screen, setScreen] = useState<Screen>("invite");
+  const [loveStoryFrom, setLoveStoryFrom] = useState<"invite" | "rsvp">("invite");
   const [open, setOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [musicHint, setMusicHint] = useState("");
@@ -808,6 +1011,12 @@ export default function App() {
             playing={playing}
             onToggleMusic={toggleMusic}
             onOpenDetails={() => setScreen("details")}
+            onOpenRsvp={() => setScreen("rsvp")}
+            onOpenLoveStory={() => {
+              setLoveStoryFrom("invite");
+              setScreen("love-story");
+            }}
+            onCloseEnvelope={() => setOpen(false)}
           />
         )}
         {screen === "details" && (
@@ -816,13 +1025,41 @@ export default function App() {
               setScreen("invite");
               setOpen(true);
             }}
-            onGoRsvp={() => setScreen("rsvp")}
           />
         )}
         {screen === "rsvp" && (
-          <RsvpScreen onBack={() => setScreen("invite")} onDone={() => setScreen("thanks")} />
+          <RsvpScreen
+            onBack={() => {
+              setScreen("invite");
+              setOpen(true);
+            }}
+            onDone={() => setScreen("thanks")}
+            onContinueStory={() => {
+              setLoveStoryFrom("rsvp");
+              setScreen("love-story");
+            }}
+          />
         )}
-        {screen === "thanks" && <ThanksScreen onBack={() => setScreen("invite")} />}
+        {screen === "love-story" && (
+          <LoveStoryScreen
+            onBack={() => {
+              setScreen(loveStoryFrom);
+              if (loveStoryFrom === "invite") setOpen(true);
+            }}
+            onCloseEnvelope={() => {
+              setScreen("invite");
+              setOpen(false);
+            }}
+          />
+        )}
+        {screen === "thanks" && (
+          <ThanksScreen
+            onBack={() => {
+              setScreen("invite");
+              setOpen(true);
+            }}
+          />
+        )}
         {musicHint && (
           <p className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-[#3b2a1f] px-4 py-2 text-xs text-white">
             {musicHint}
