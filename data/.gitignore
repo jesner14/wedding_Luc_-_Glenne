@@ -1,0 +1,3 @@
+# Local SQLite database (RSVP)
+data/*.db
+data/*.db-*

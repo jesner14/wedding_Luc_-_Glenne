@@ -33,3 +33,7 @@ Desktop.ini
 # Local / temp
 *.tmp
 *.temp
+
+# SQLite RSVP database
+data/*.db
+data/*.db-*

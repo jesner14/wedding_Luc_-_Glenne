@@ -15,26 +15,26 @@ interface Guest {
   registeredAt: string;
 }
 
-const DB_KEY = "wedding_guests";
-const GUEST_LIMIT = 200;
 const MUSIC_SRC = "/music/notre-musique.m4a";
+const RSVP_API = "/api/rsvp";
 
-function loadGuests(): Record<string, Guest> {
-  try {
-    return JSON.parse(localStorage.getItem(DB_KEY) || "{}");
-  } catch {
-    return {};
+async function submitRsvp(payload: {
+  name: string;
+  mairie: boolean;
+  eglise: boolean;
+  soiree: boolean;
+  note: string;
+}): Promise<{ guest: Guest; existing: boolean }> {
+  const res = await fetch(RSVP_API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Impossible d’enregistrer la confirmation.");
   }
-}
-
-function saveGuest(guest: Guest) {
-  const db = loadGuests();
-  db[guest.id] = guest;
-  localStorage.setItem(DB_KEY, JSON.stringify(db));
-}
-
-function generateId(): string {
-  return Math.random().toString(36).slice(2, 10).toUpperCase();
+  return data as { guest: Guest; existing: boolean };
 }
 
 const WEDDING = {
@@ -730,31 +730,24 @@ function RsvpScreen({
       return;
     }
 
-    const db = loadGuests();
-    const existing = Object.values(db).find(
-      (g) => g.name.toLowerCase() === trimmed.toLowerCase()
-    );
-    if (existing) {
-      onDone();
-      return;
-    }
-    if (Object.keys(db).length >= GUEST_LIMIT) {
-      setError("Les confirmations sont closes (200 invités).");
-      return;
-    }
-
     setLoading(true);
-    saveGuest({
-      id: generateId(),
-      name: trimmed,
-      attending: true,
-      events: { mairie, eglise, soiree },
-      note: note.trim(),
-      registeredAt: new Date().toISOString(),
-    });
-    await new Promise((r) => setTimeout(r, 450));
-    setLoading(false);
-    onDone();
+    setError("");
+    try {
+      await submitRsvp({
+        name: trimmed,
+        mairie,
+        eglise,
+        soiree,
+        note: note.trim(),
+      });
+      onDone();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Impossible d’enregistrer la confirmation.";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const eventOptions = [
