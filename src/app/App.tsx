@@ -15,7 +15,7 @@ interface Guest {
   registeredAt: string;
 }
 
-const MUSIC_SRC = "/music/notre-musique.m4a";
+const MUSIC_SRC = "/music/notre-musique.mp3";
 const RSVP_API = "/api/rsvp";
 
 async function submitRsvp(payload: {
@@ -40,14 +40,19 @@ async function submitRsvp(payload: {
 const WEDDING = {
   bride: "Glenne",
   groom: "Luc",
+  tagline: "L'évidence d'un nous",
   date: "4 Décembre 2026",
   dateIso: "2026-12-04",
+  dateShort: "04.12.2026",
   civilTime: "14:00",
+  soireeTime: "18:00",
   coutumier: "Pavillon Royal",
   coutumierDetail: "Akanda Pavés, après l'École les Kikinous",
   civil: "Mairie d'Akanda",
   soiree: "Pavillon Royal",
   soireeDetail: "Akanda Pavés, après l'École les Kikinous",
+  flight: "LG041226",
+  theme: "Raffiné Harmonieux",
   rsvpDeadline: "20 Août 2026",
 };
 
@@ -534,44 +539,23 @@ function DetailsScreen({
 }) {
   const programItems = [
     {
-      time: "12:00",
-      date: "27.08.2026",
-      title: "Mariage Civil à la mairie de",
-      place: "Yaoundé I, Mballa II",
-      icon: "civil",
+      time: WEDDING.civilTime,
+      date: WEDDING.dateShort,
+      title: "Mariage civil à la",
+      place: WEDDING.civil,
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Mairie+d%27Akanda",
     },
     {
-      time: "15:00",
-      date: "27.08.2026",
-      title: "Mariage religieux à EEC",
-      place: "Manguier",
-      icon: "religious",
-    },
-    {
-      time: "19:00",
-      date: "27.08.2026",
-      title: "Soirée dansante à la Vallée",
-      place: "Verte, Fouguerolles",
-      icon: "party",
+      time: WEDDING.soireeTime,
+      date: WEDDING.dateShort,
+      title: "Soirée au",
+      place: WEDDING.soiree,
+      detail: WEDDING.soireeDetail,
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Pavillon+Royal+Akanda",
     },
   ] as const;
 
-  const faq = [
-    {
-      q: "Y a-t-il des parkings disponibles ?",
-      a: "Pour les invités qui viennent en voiture, des parkings gratuits sont aménagés sur place avec accès facile aux différents lieux de cérémonie.",
-    },
-    {
-      q: "Les enfants sont-ils conviés ?",
-      a: "Nous adorons vos petits ! Cependant c’est exclusivement entre adultes car les multiples déplacements et ambiances ne sont pas favorables à leur présence.",
-    },
-    {
-      q: "Les photos et vidéos sont-elles autorisées pendant la cérémonie ?",
-      a: "N’hésitez pas à en prendre mais veuillez faire attention à nos photographes.",
-    },
-  ] as const;
-
-  const palette = ["#8a523f", "#c46238", "#8a8f58", "#c7a05d", "#e9d9c4"];
+  const palette = ["#ED8946", "#AD8330", "#F6F7EC"];
 
   return (
     <div className="px-6 pb-10 pt-8">
@@ -622,16 +606,30 @@ function DetailsScreen({
               <p className="text-[18px] text-[#3b2a1f]" style={fontSans}>
                 {item.place}
               </p>
-              <button
-                type="button"
+              {"detail" in item && item.detail && (
+                <p className="mt-1 text-[15px] text-[#8c6b52]" style={fontSerif}>
+                  {item.detail}
+                </p>
+              )}
+              <a
+                href={item.mapsUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-[#8c6b52]"
                 style={fontSerif}
-                onClick={() => {}}
               >
                 <span aria-hidden>📍</span> S’y rendre
-              </button>
+              </a>
             </div>
           ))}
+        </div>
+        <div className="mx-auto mt-10 max-w-sm text-center">
+          <p className="text-[12px] uppercase tracking-[0.22em] text-[#8c6b52]" style={fontSans}>
+            Vol {WEDDING.flight} · Thème {WEDDING.theme}
+          </p>
+          <p className="mt-3 text-2xl text-[#3b2a1f]" style={fontScript}>
+            {WEDDING.tagline}
+          </p>
         </div>
       </section>
 
@@ -652,6 +650,7 @@ function DetailsScreen({
                 borderTopLeftRadius: 6,
                 borderTopRightRadius: 6,
                 clipPath: "polygon(0 0, 100% 0, 100% 68%, 50% 100%, 0 68%)",
+                boxShadow: c.toLowerCase() === "#f6f7ec" ? "inset 0 0 0 1px rgba(59,42,31,0.18)" : undefined,
               }}
             />
           ))}
@@ -667,24 +666,6 @@ function DetailsScreen({
             Tous vos cadeaux sont bienvenus, qu’ils soient matériels ou financiers.
             Nous exprimons d’avance notre gratitude pour votre geste.
           </p>
-        </div>
-      </section>
-
-      <section className="mb-10">
-        <h2 className="mb-6 text-center text-4xl text-[#7a5c48]" style={fontScript}>
-          Foire à Questions
-        </h2>
-        <div className="space-y-8">
-          {faq.map((item, idx) => (
-            <div key={idx}>
-              <p className="text-center text-[17px] font-semibold text-[#7a5c48]" style={fontSans}>
-                {item.q}
-              </p>
-              <p className="mt-3 text-center text-[16px] leading-relaxed text-[#3b2a1f]" style={fontSans}>
-                {item.a}
-              </p>
-            </div>
-          ))}
         </div>
       </section>
 
