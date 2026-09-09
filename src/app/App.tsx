@@ -976,6 +976,17 @@ export default function App() {
     }
   };
 
+  const stopMusicAndClose = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    setPlaying(false);
+    setScreen("invite");
+    setOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#f7f1e8]" style={fontSans}>
       <div className="mx-auto min-h-screen max-w-xl">
@@ -990,7 +1001,7 @@ export default function App() {
               setLoveStoryFrom("invite");
               setScreen("love-story");
             }}
-            onCloseEnvelope={() => setOpen(false)}
+            onCloseEnvelope={stopMusicAndClose}
           />
         )}
         {screen === "details" && (
@@ -1020,10 +1031,7 @@ export default function App() {
               setScreen(loveStoryFrom);
               if (loveStoryFrom === "invite") setOpen(true);
             }}
-            onCloseEnvelope={() => {
-              setScreen("invite");
-              setOpen(false);
-            }}
+            onCloseEnvelope={stopMusicAndClose}
           />
         )}
         {screen === "thanks" && (
