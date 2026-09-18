@@ -53,7 +53,7 @@ const WEDDING = {
   soireeDetail: "Akanda Pavés, après l'École les Kikinous",
   flight: "LG041226",
   theme: "Raffiné Harmonieux",
-  rsvpDeadline: "20 Août 2026",
+  rsvpDeadline: "10 Novembre 2026",
 };
 
 const COUPLE_PHOTOS = [
@@ -111,7 +111,7 @@ function Envelope({
     <div className="envelope-open relative mx-auto w-full">
       <div className="envelope-open-stack">
         <img
-          src="/decor/envelope-haut.png"
+          src="/decor/envelope-haut.png?v=2"
           alt=""
           draggable={false}
           className="envelope-haut"
@@ -140,7 +140,7 @@ function Envelope({
         </button>
 
         <img
-          src="/decor/envelope-bas.png"
+          src="/decor/envelope-bas.png?v=2"
           alt=""
           draggable={false}
           className="envelope-bas"
@@ -410,7 +410,7 @@ function ClosedSplash({ onOpen }: { onOpen: () => void }) {
         Vous êtes invité par
       </p>
       <h1 className="mb-12 text-5xl text-[#3b2a1f]" style={fontScript}>
-        {WEDDING.bride} &amp; {WEDDING.groom}
+        {WEDDING.groom} &amp; {WEDDING.bride}
       </h1>
       <Envelope open={false} onOpen={onOpen} />
       <button
@@ -515,7 +515,7 @@ function OpenedInvitation({
       <footer className="invite-closing">
         <p className="invite-closing-kicker">Amoureusement vôtre,</p>
         <h2 className="invite-closing-names">
-          {WEDDING.bride} &amp; {WEDDING.groom}
+          {WEDDING.groom} &amp; {WEDDING.bride}
         </h2>
         <Countdown compact />
         <img
@@ -693,7 +693,6 @@ function RsvpScreen({
 }) {
   const [name, setName] = useState("");
   const [mairie, setMairie] = useState(false);
-  const [eglise, setEglise] = useState(false);
   const [soiree, setSoiree] = useState(false);
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
@@ -706,7 +705,7 @@ function RsvpScreen({
       setError("Merci d’indiquer votre nom complet.");
       return;
     }
-    if (!mairie && !eglise && !soiree) {
+    if (!mairie && !soiree) {
       setError("Merci de sélectionner au moins un événement.");
       return;
     }
@@ -717,7 +716,7 @@ function RsvpScreen({
       await submitRsvp({
         name: trimmed,
         mairie,
-        eglise,
+        eglise: false,
         soiree,
         note: note.trim(),
       });
@@ -733,7 +732,6 @@ function RsvpScreen({
 
   const eventOptions = [
     { key: "mairie", label: "Je serai à la mairie", checked: mairie, set: setMairie },
-    { key: "eglise", label: "Je serai à l'église", checked: eglise, set: setEglise },
     { key: "soiree", label: "Je serai à la soirée", checked: soiree, set: setSoiree },
   ] as const;
 
