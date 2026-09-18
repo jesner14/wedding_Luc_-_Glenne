@@ -750,10 +750,14 @@ function RsvpScreen({
         Veuillez Confirmer
       </h1>
       <p
-        className="mb-10 text-center text-[12px] uppercase tracking-[0.18em] text-[#6b6e45]"
-        style={fontSerif}
+        className="mb-10 text-center text-[clamp(1rem,4.2vw,1.2rem)] font-medium uppercase tracking-[0.12em] text-[#3b2a1f]"
+        style={fontSans}
       >
-        Votre présence avant le {WEDDING.rsvpDeadline}
+        Votre présence avant le{" "}
+        <span className="whitespace-nowrap">
+          <span className="font-semibold tabular-nums text-[#c45c32]">10</span> Novembre
+        </span>{" "}
+        <span className="font-semibold tabular-nums text-[#c45c32]">2026</span>
       </p>
 
       <form onSubmit={handleSubmit} className="mx-auto w-full max-w-md flex-1">
