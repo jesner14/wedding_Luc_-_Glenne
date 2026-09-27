@@ -47,6 +47,7 @@ const WEDDING = {
   dateShort: "04.12.2026",
   civilTime: "14:00",
   soireeTime: "18:00",
+  coutumeTime: "09:00",
   coutumier: "Pavillon Royal",
   coutumierDetail: "Akanda Pavés, après l'École les Kikinous",
   civil: "Mairie d'Akanda",
@@ -539,6 +540,14 @@ function DetailsScreen({
   onBack: () => void;
 }) {
   const programItems = [
+    {
+      time: WEDDING.coutumeTime,
+      date: WEDDING.dateShort,
+      title: "Cérémonie coutumière au",
+      place: WEDDING.coutumier,
+      detail: WEDDING.coutumierDetail,
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Pavillon+Royal+Akanda",
+    },
     {
       time: WEDDING.civilTime,
       date: WEDDING.dateShort,
