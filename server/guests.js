@@ -24,6 +24,7 @@ function mapGuest(row) {
     name: row.name,
     attending: Boolean(row.attending),
     events: {
+      coutume: Boolean(row.coutume),
       mairie: Boolean(row.mairie),
       eglise: Boolean(row.eglise),
       soiree: Boolean(row.soiree),
@@ -38,6 +39,7 @@ const SCHEMA_STATEMENTS = [
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     attending INTEGER NOT NULL DEFAULT 1,
+    coutume INTEGER NOT NULL DEFAULT 0,
     mairie INTEGER NOT NULL DEFAULT 0,
     eglise INTEGER NOT NULL DEFAULT 0,
     soiree INTEGER NOT NULL DEFAULT 0,
@@ -45,6 +47,10 @@ const SCHEMA_STATEMENTS = [
     registered_at TEXT NOT NULL
   )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_guests_name ON guests(name)`,
+];
+
+const MIGRATION_STATEMENTS = [
+  `ALTER TABLE guests ADD COLUMN coutume INTEGER NOT NULL DEFAULT 0`,
 ];
 
 function createTursoDb(url, authToken) {
@@ -84,13 +90,35 @@ function createTursoDb(url, authToken) {
     return results;
   }
 
+  async function pipelineAllowErrors(statements) {
+    const requests = statements.map((sql) => ({
+      type: "execute",
+      stmt: typeof sql === "string" ? { sql } : sql,
+    }));
+    requests.push({ type: "close" });
+
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ requests }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data?.error || `Turso HTTP ${res.status}`);
+    }
+    return data.results || [];
+  }
+
   function rowsFromResult(result) {
     const cols = result.cols?.map((c) => c.name) || [];
     return (result.rows || []).map((row) => {
       const obj = {};
       row.forEach((cell, i) => {
         const key = cols[i];
-        // Turso cells: { type: 'text'|'integer'|..., value: ... } or plain
         obj[key] = cell && typeof cell === "object" && "value" in cell ? cell.value : cell;
       });
       return obj;
@@ -100,21 +128,22 @@ function createTursoDb(url, authToken) {
   return {
     async ensureSchema() {
       await pipeline(SCHEMA_STATEMENTS.map((sql) => ({ sql })));
+      await pipelineAllowErrors(MIGRATION_STATEMENTS.map((sql) => ({ sql })));
     },
     async listGuests() {
       const [result] = await pipeline([
         {
-          sql: `SELECT id, name, attending, mairie, eglise, soiree, note, registered_at
+          sql: `SELECT id, name, attending, coutume, mairie, eglise, soiree, note, registered_at
                 FROM guests ORDER BY registered_at DESC`,
         },
       ]);
       const rows = rowsFromResult(result);
       return { guests: rows.map(mapGuest), count: rows.length, limit: GUEST_LIMIT };
     },
-    async createGuest({ name, mairie, eglise, soiree, note }) {
+    async createGuest({ name, coutume, mairie, eglise, soiree, note }) {
       const [existingResult] = await pipeline([
         {
-          sql: `SELECT id, name, attending, mairie, eglise, soiree, note, registered_at
+          sql: `SELECT id, name, attending, coutume, mairie, eglise, soiree, note, registered_at
                 FROM guests WHERE name = ? COLLATE NOCASE`,
           args: [{ type: "text", value: name }],
         },
@@ -136,6 +165,7 @@ function createTursoDb(url, authToken) {
         id: generateId(),
         name,
         attending: 1,
+        coutume: coutume ? 1 : 0,
         mairie: mairie ? 1 : 0,
         eglise: eglise ? 1 : 0,
         soiree: soiree ? 1 : 0,
@@ -145,12 +175,13 @@ function createTursoDb(url, authToken) {
 
       await pipeline([
         {
-          sql: `INSERT INTO guests (id, name, attending, mairie, eglise, soiree, note, registered_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          sql: `INSERT INTO guests (id, name, attending, coutume, mairie, eglise, soiree, note, registered_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           args: [
             { type: "text", value: guest.id },
             { type: "text", value: guest.name },
             { type: "integer", value: String(guest.attending) },
+            { type: "integer", value: String(guest.coutume) },
             { type: "integer", value: String(guest.mairie) },
             { type: "integer", value: String(guest.eglise) },
             { type: "integer", value: String(guest.soiree) },
@@ -172,22 +203,29 @@ async function createLocalDb() {
   mkdirSync(dataDir, { recursive: true });
   const db = new DatabaseSync(join(dataDir, "wedding.db"));
   db.exec(SCHEMA_STATEMENTS.join(";\n") + ";");
+  for (const sql of MIGRATION_STATEMENTS) {
+    try {
+      db.exec(sql);
+    } catch {
+      // column already exists
+    }
+  }
 
   return {
     async ensureSchema() {},
     async listGuests() {
       const rows = db
         .prepare(
-          `SELECT id, name, attending, mairie, eglise, soiree, note, registered_at
+          `SELECT id, name, attending, coutume, mairie, eglise, soiree, note, registered_at
            FROM guests ORDER BY registered_at DESC`
         )
         .all();
       return { guests: rows.map(mapGuest), count: rows.length, limit: GUEST_LIMIT };
     },
-    async createGuest({ name, mairie, eglise, soiree, note }) {
+    async createGuest({ name, coutume, mairie, eglise, soiree, note }) {
       const existing = db
         .prepare(
-          `SELECT id, name, attending, mairie, eglise, soiree, note, registered_at
+          `SELECT id, name, attending, coutume, mairie, eglise, soiree, note, registered_at
            FROM guests WHERE name = ? COLLATE NOCASE`
         )
         .get(name);
@@ -204,6 +242,7 @@ async function createLocalDb() {
         id: generateId(),
         name,
         attending: 1,
+        coutume: coutume ? 1 : 0,
         mairie: mairie ? 1 : 0,
         eglise: eglise ? 1 : 0,
         soiree: soiree ? 1 : 0,
@@ -212,8 +251,8 @@ async function createLocalDb() {
       };
 
       db.prepare(
-        `INSERT INTO guests (id, name, attending, mairie, eglise, soiree, note, registered_at)
-         VALUES (@id, @name, @attending, @mairie, @eglise, @soiree, @note, @registered_at)`
+        `INSERT INTO guests (id, name, attending, coutume, mairie, eglise, soiree, note, registered_at)
+         VALUES (@id, @name, @attending, @coutume, @mairie, @eglise, @soiree, @note, @registered_at)`
       ).run(guest);
 
       return { guest: mapGuest(guest), existing: false };

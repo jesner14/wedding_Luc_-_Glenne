@@ -46,6 +46,7 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
       const body = await readJsonBody(req);
       const name = String(body.name || "").trim();
+      const coutume = Boolean(body.coutume);
       const mairie = Boolean(body.mairie);
       const eglise = Boolean(body.eglise);
       const soiree = Boolean(body.soiree);
@@ -55,13 +56,13 @@ export default async function handler(req, res) {
         send(res, 400, { error: "Merci d’indiquer votre nom complet." });
         return;
       }
-      if (!mairie && !eglise && !soiree) {
+      if (!coutume && !mairie && !eglise && !soiree) {
         send(res, 400, { error: "Merci de sélectionner au moins un événement." });
         return;
       }
 
       try {
-        const result = await db.createGuest({ name, mairie, eglise, soiree, note });
+        const result = await db.createGuest({ name, coutume, mairie, eglise, soiree, note });
         send(res, result.existing ? 200 : 201, result);
       } catch (err) {
         send(res, err.status || 500, { error: err.message || "Erreur serveur." });

@@ -7,6 +7,7 @@ interface Guest {
   name: string;
   attending: boolean;
   events: {
+    coutume: boolean;
     mairie: boolean;
     eglise: boolean;
     soiree: boolean;
@@ -20,8 +21,8 @@ const RSVP_API = "/api/rsvp";
 
 async function submitRsvp(payload: {
   name: string;
+  coutume: boolean;
   mairie: boolean;
-  eglise: boolean;
   soiree: boolean;
   note: string;
 }): Promise<{ guest: Guest; existing: boolean }> {
@@ -692,6 +693,7 @@ function RsvpScreen({
   onContinueStory: () => void;
 }) {
   const [name, setName] = useState("");
+  const [coutume, setCoutume] = useState(false);
   const [mairie, setMairie] = useState(false);
   const [soiree, setSoiree] = useState(false);
   const [note, setNote] = useState("");
@@ -705,7 +707,7 @@ function RsvpScreen({
       setError("Merci d’indiquer votre nom complet.");
       return;
     }
-    if (!mairie && !soiree) {
+    if (!coutume && !mairie && !soiree) {
       setError("Merci de sélectionner au moins un événement.");
       return;
     }
@@ -715,8 +717,8 @@ function RsvpScreen({
     try {
       await submitRsvp({
         name: trimmed,
+        coutume,
         mairie,
-        eglise: false,
         soiree,
         note: note.trim(),
       });
@@ -731,6 +733,7 @@ function RsvpScreen({
   };
 
   const eventOptions = [
+    { key: "coutume", label: "Je serai à la coutume", checked: coutume, set: setCoutume },
     { key: "mairie", label: "Je serai à la mairie", checked: mairie, set: setMairie },
     { key: "soiree", label: "Je serai à la soirée", checked: soiree, set: setSoiree },
   ] as const;

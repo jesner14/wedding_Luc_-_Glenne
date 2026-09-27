@@ -21,6 +21,7 @@ await pipeline([
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     attending INTEGER NOT NULL DEFAULT 1,
+    coutume INTEGER NOT NULL DEFAULT 0,
     mairie INTEGER NOT NULL DEFAULT 0,
     eglise INTEGER NOT NULL DEFAULT 0,
     soiree INTEGER NOT NULL DEFAULT 0,
@@ -28,4 +29,5 @@ await pipeline([
     registered_at TEXT NOT NULL
   )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_guests_name ON guests(name)`,
+  `ALTER TABLE guests ADD COLUMN coutume INTEGER NOT NULL DEFAULT 0`,
 ]);
