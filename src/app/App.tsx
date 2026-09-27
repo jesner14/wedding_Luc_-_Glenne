@@ -322,7 +322,7 @@ function EnvelopeCollage() {
   return (
     <div className="envelope-collage" aria-hidden={false}>
       <img
-        src="/decor/invite-card.png?v=2"
+        src="/decor/invite-card.png?v=4"
         alt="Invitation Luc et Glenne"
         className="collage-invite-card"
         draggable={false}
